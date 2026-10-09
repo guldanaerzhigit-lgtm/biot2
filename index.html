@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест по БиОТ — 105 вопросов</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;color:#e0e0e0;display:flex;justify-content:center;align-items:center;padding:20px}
+  .container{background:rgba(255,255,255,0.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:20px;max-width:800px;width:100%;padding:40px;box-shadow:0 25px 50px rgba(0,0,0,0.4)}
+  h1{text-align:center;font-size:28px;margin-bottom:8px;color:#fff;font-weight:600}
+  h2{text-align:center;font-size:16px;color:#a0aec0;margin-bottom:30px;font-weight:400}
+  .screen{display:none}
+  .screen.active{display:block}
+  .login-form{margin-top:20px}
+  .form-group{margin-bottom:24px}
+  .form-group label{display:block;margin-bottom:8px;font-size:15px;color:#cbd5e0;font-weight:500}
+  .form-group input{width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.15);border-radius:12px;background:rgba(0,0,0,0.25);color:#fff;font-size:16px;outline:none;transition:all 0.3s}
+  .form-group input:focus{border-color:#4fd1c5;box-shadow:0 0 0 3px rgba(79,209,197,0.15)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 32px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s;text-decoration:none}
+  .btn-primary{background:linear-gradient(135deg,#4fd1c5,#319795);color:#fff;width:100%}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(79,209,197,0.35)}
+  .btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-secondary{background:rgba(255,255,255,0.1);color:#e0e0e0;border:1px solid rgba(255,255,255,0.15)}
+  .btn-secondary:hover{background:rgba(255,255,255,0.18)}
+  .lang-switch{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+  .lang-btn{padding:6px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#a0aec0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+  .lang-btn.active{background:linear-gradient(135deg,#4fd1c5,#319795);color:#fff;border-color:transparent}
+  .progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-bottom:24px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#4fd1c5,#319795);border-radius:3px;transition:width 0.4s ease}
+  .question-counter{text-align:center;font-size:14px;color:#a0aec0;margin-bottom:20px}
+  .question-text{font-size:18px;line-height:1.6;color:#fff;margin-bottom:28px;padding:20px;background:rgba(0,0,0,0.2);border-radius:14px;border-left:4px solid #4fd1c5}
+  .answers{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+  .answer-option{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.08);border-radius:14px;cursor:pointer;transition:all 0.25s;text-align:left;width:100%;color:#e0e0e0;font-size:16px;line-height:1.5;font-family:inherit}
+  .answer-option:hover{background:rgba(255,255,255,0.1);border-color:rgba(79,209,197,0.4);transform:translateX(4px)}
+  .answer-option.selected{background:rgba(79,209,197,0.12);border-color:#4fd1c5;color:#fff}
+  .answer-option.correct{background:rgba(72,187,120,0.18);border-color:#48bb78;color:#fff}
+  .answer-option.correct .answer-letter{background:#48bb78;color:#1a1a2e}
+  .answer-option.wrong{background:rgba(252,129,129,0.18);border-color:#fc8181;color:#fff}
+  .answer-option.wrong .answer-letter{background:#fc8181;color:#1a1a2e}
+  .answer-option.disabled{cursor:default;opacity:0.7}
+  .answer-option.disabled:hover{transform:none;border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.05)}
+  .answer-letter{flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border-radius:10px;font-weight:700;font-size:15px;color:#fff;transition:all 0.25s}
+  .answer-option.selected .answer-letter{background:#4fd1c5;color:#1a1a2e}
+  .nav-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .nav-buttons .btn{flex:1;min-width:140px;max-width:300px}
+  .result-card{text-align:center;padding:30px;background:rgba(0,0,0,0.2);border-radius:16px;margin-bottom:24px}
+  .score-circle{width:160px;height:160px;border-radius:50%;margin:0 auto 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid;transition:all 0.5s}
+  .score-circle.pass{border-color:#48bb78;background:rgba(72,187,120,0.1)}
+  .score-circle.fail{border-color:#fc8181;background:rgba(252,129,129,0.1)}
+  .score-number{font-size:42px;font-weight:700;line-height:1}
+  .score-circle.pass .score-number{color:#48bb78}
+  .score-circle.fail .score-number{color:#fc8181}
+  .score-label{font-size:14px;color:#a0aec0;margin-top:6px}
+  .result-status{font-size:22px;font-weight:600;margin-bottom:8px}
+  .result-status.pass{color:#48bb78}
+  .result-status.fail{color:#fc8181}
+  .result-detail{color:#a0aec0;font-size:15px;margin-bottom:24px}
+  .history-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14px}
+  .history-table th,.history-table td{padding:10px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.08)}
+  .history-table th{color:#a0aec0;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+  .history-table td{color:#e0e0e0}
+  .history-table tr:hover td{background:rgba(255,255,255,0.03)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+  .badge-pass{background:rgba(72,187,120,0.15);color:#48bb78}
+  .badge-fail{background:rgba(252,129,129,0.15);color:#fc8181}
+  .btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+  .btn-row .btn{flex:1;min-width:180px}
+  .info-box{background:rgba(79,209,197,0.08);border:1px solid rgba(79,209,197,0.2);border-radius:12px;padding:16px;margin-top:16px;font-size:14px;color:#a0aec0;line-height:1.6}
+  .info-box strong{color:#4fd1c5}
+  .error-msg{color:#fc8181;font-size:14px;margin-top:8px;min-height:20px}
+  @media(max-width:600px){
+    .container{padding:24px}
+    h1{font-size:22px}
+    .question-text{font-size:16px;padding:14px}
+    .answer-option{padding:12px 14px;font-size:15px}
+    .nav-buttons .btn{min-width:100px;font-size:14px;padding:12px 16px}
+    .score-circle{width:130px;height:130px}
+    .score-number{font-size:34px}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="screen-login" class="screen active">
+    <div class="lang-switch">
+      <button class="lang-btn active" id="lang-ru" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" id="lang-kz" onclick="setLang('kz')">KZ</button>
+    </div>
+    <h1 data-i18n="title"></h1>
+    <h2 data-i18n="subtitle"></h2>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="fio" data-i18n="fioLabel"></label>
+        <input type="text" id="fio" autocomplete="name">
+      </div>
+      <button class="btn btn-primary" onclick="startTest()" data-i18n="startBtn"></button>
+    </div>
+    <div style="margin-top:30px;text-align:center">
+      <button class="btn btn-secondary" onclick="showPasswordPrompt()" data-i18n="journalBtn"></button>
+    </div>
+  </div>
+
+  <div id="screen-test" class="screen">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="question-counter" id="question-counter"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="answers" id="answers"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-primary" id="btn-confirm" onclick="confirmAnswer()" disabled data-i18n="confirmBtn"></button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" disabled style="display:none"></button>
+    </div>
+  </div>
+
+  <div id="screen-results" class="screen">
+    <h1 data-i18n="resultsTitle"></h1>
+    <div class="result-card">
+      <div class="score-circle" id="score-circle">
+        <div class="score-number" id="score-number">0</div>
+        <div class="score-label" data-i18n="scoreLabel"></div>
+      </div>
+      <div class="result-status" id="result-status"></div>
+      <div class="result-detail" id="result-detail"></div>
+    </div>
+    <div class="info-box" data-i18n="infoBox"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="restartTest()" data-i18n="restartBtn"></button>
+      <button class="btn btn-secondary" onclick="showPasswordPrompt()" data-i18n="journalBtn2"></button>
+    </div>
+  </div>
+
+  <div id="screen-password" class="screen">
+    <h1 data-i18n="journalTitle"></h1>
+    <h2 data-i18n="journalSubtitle"></h2>
+    <div class="login-form">
+      <div class="form-group">
+        <label for="password" data-i18n="passwordLabel"></label>
+        <input type="password" id="password">
+        <div class="error-msg" id="password-error"></div>
+      </div>
+      <button class="btn btn-primary" onclick="checkPassword()" data-i18n="loginBtn"></button>
+    </div>
+    <div style="margin-top:20px;text-align:center">
+      <button class="btn btn-secondary" onclick="goToLogin()" data-i18n="backBtn"></button>
+    </div>
+  </div>
+
+  <div id="screen-history" class="screen">
+    <h1 data-i18n="journalTitle2"></h1>
+    <h2 data-i18n="journalSubtitle2"></h2>
+    <div id="history-content"></div>
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-primary" onclick="downloadResults()" data-i18n="downloadAllBtn"></button>
+      <button class="btn btn-secondary" onclick="goToLogin()" data-i18n="homeBtn"></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const ALL_QUESTIONS=[{"id": 1, "question": "За счёт кого финансируются мероприятия по безопасности и охране труда?", "answers": [{"letter": "А", "text": "Работников — из их заработной платы"}, {"letter": "Б", "text": "Работодателя и других не запрещённых законом источников"}, {"letter": "В", "text": "Только государственного бюджета"}, {"letter": "Г", "text": "Работников и работодателя поровну"}], "correct": "Б"}, {"id": 2, "question": "Как часто проводится аттестация производственных объектов по условиям труда?", "answers": [{"letter": "А", "text": "Ежегодно"}, {"letter": "Б", "text": "Один раз в 2 года"}, {"letter": "В", "text": "Один раз в 3 года"}, {"letter": "Г", "text": "Не реже одного раза в 5 лет"}], "correct": "Г"}, {"id": 3, "question": "Как часто руководители и лица, ответственные за БиОТ, проходят обучение и проверку знаний?", "answers": [{"letter": "А", "text": "Не реже одного раза в 3 года"}, {"letter": "Б", "text": "Не реже одного раза в 5 лет"}, {"letter": "В", "text": "Один раз при назначении"}, {"letter": "Г", "text": "Ежеквартально"}], "correct": "А"}, {"id": 4, "question": "Что обязательно при отказе работника от работы из-за угрозы жизни или отсутствия СИЗ?", "answers": [{"letter": "А", "text": "Устно предупредить коллег"}, {"letter": "Б", "text": "Получить разрешение профсоюза"}, {"letter": "В", "text": "Письменно известить непосредственного руководителя или работодателя"}, {"letter": "Г", "text": "Сообщить после окончания смены"}], "correct": "В"}, {"id": 5, "question": "В какой срок работодатель сообщает о несчастном случае в территориальное подразделение?", "answers": [{"letter": "А", "text": "Немедленно, в течение суток"}, {"letter": "Б", "text": "В течение 3 рабочих дней"}, {"letter": "В", "text": "В течение 10 дней"}, {"letter": "Г", "text": "После окончания расследования"}], "correct": "А"}, {"id": 6, "question": "В какой срок работодатель уведомляет страховую организацию о несчастном случае?", "answers": [{"letter": "А", "text": "В течение 24 часов"}, {"letter": "Б", "text": "Не позднее 3 рабочих дней"}, {"letter": "В", "text": "В течение 10 рабочих дней"}, {"letter": "Г", "text": "В течение месяца"}], "correct": "Б"}, {"id": 7, "question": "Кто возглавляет комиссию по специальному расследованию несчастного случая?", "answers": [{"letter": "А", "text": "Руководитель организации"}, {"letter": "Б", "text": "Представитель работников"}, {"letter": "В", "text": "Представитель страховой организации"}, {"letter": "Г", "text": "Государственный инспектор труда"}], "correct": "Г"}, {"id": 8, "question": "Какой срок расследования несчастного случая установлен без учёта продлений?", "answers": [{"letter": "А", "text": "3 рабочих дня"}, {"letter": "Б", "text": "5 рабочих дней"}, {"letter": "В", "text": "10 рабочих дней"}, {"letter": "Г", "text": "30 календарных дней"}], "correct": "В"}, {"id": 9, "question": "Какую максимальную степень вины пострадавшего может установить комиссия при его грубой неосторожности?", "answers": [{"letter": "А", "text": "10%"}, {"letter": "Б", "text": "25%"}, {"letter": "В", "text": "50%"}, {"letter": "Г", "text": "75%"}], "correct": "Б"}, {"id": 10, "question": "Сколько лет работодатель хранит материалы расследования несчастного случая?", "answers": [{"letter": "А", "text": "5 лет"}, {"letter": "Б", "text": "10 лет"}, {"letter": "В", "text": "25 лет"}, {"letter": "Г", "text": "45 лет"}], "correct": "Г"}, {"id": 11, "question": "Кто НЕ включается в состав комиссии по расследованию несчастного случая?", "answers": [{"letter": "А", "text": "Должностное лицо, отвечающее за безопасность на участке происшествия"}, {"letter": "Б", "text": "Руководитель службы безопасности и охраны труда"}, {"letter": "В", "text": "Представитель работников"}, {"letter": "Г", "text": "Заместитель руководителя организации"}], "correct": "А"}, {"id": 12, "question": "На какой срок госинспектор труда может приостановить работу участка или оборудования?", "answers": [{"letter": "А", "text": "До 1 рабочего дня без обращения в суд"}, {"letter": "Б", "text": "До 30 календарных дней"}, {"letter": "В", "text": "До 5 рабочих дней с обязательным иском в суд"}, {"letter": "Г", "text": "Бессрочно до устранения нарушений"}], "correct": "В"}, {"id": 13, "question": "При какой численности работников организация с производственной деятельностью создаёт службу БиОТ?", "answers": [{"letter": "А", "text": "Более 10 работников"}, {"letter": "Б", "text": "Более 20 работников"}, {"letter": "В", "text": "Более 30 работников"}, {"letter": "Г", "text": "Более 50 работников"}], "correct": "Г"}, {"id": 14, "question": "Какая обязанность работодателя введена с 4 августа 2026 года?", "answers": [{"letter": "А", "text": "Вести журнал регистрации несчастных случаев"}, {"letter": "Б", "text": "Приводить все основные фонды в соответствие с действующими нормами безопасности"}, {"letter": "В", "text": "Страховать работников от несчастных случаев"}, {"letter": "Г", "text": "Проводить аттестацию производственных объектов"}], "correct": "Б"}, {"id": 15, "question": "Каким образом утверждается технический инспектор по охране труда?", "answers": [{"letter": "А", "text": "Решением производственного совета по БиОТ"}, {"letter": "Б", "text": "Приказом государственного инспектора труда"}, {"letter": "В", "text": "Решением местного акимата"}, {"letter": "Г", "text": "Решением общего собрания акционеров"}], "correct": "А"}, {"id": 16, "question": "Кто проводит вводный инструктаж?", "answers": [{"letter": "А", "text": "Непосредственный руководитель"}, {"letter": "Б", "text": "Отдел кадров"}, {"letter": "В", "text": "Региональные отделы БиОТ Дирекции производственной безопасности"}, {"letter": "Г", "text": "Любой работник со стажем от 3 лет"}], "correct": "В"}, {"id": 17, "question": "В какой срок принятый на работу проходит обучение и проверку знаний по БиОТ?", "answers": [{"letter": "А", "text": "Не позднее 1 недели"}, {"letter": "Б", "text": "Не позднее 1 месяца"}, {"letter": "В", "text": "Не позднее 3 месяцев"}, {"letter": "Г", "text": "Не позднее 6 месяцев"}], "correct": "Б"}, {"id": 18, "question": "Как часто проводится повторный инструктаж?", "answers": [{"letter": "А", "text": "Не реже одного раза в квартал, в начале квартала"}, {"letter": "Б", "text": "Ежемесячно"}, {"letter": "В", "text": "Один раз в полгода"}, {"letter": "Г", "text": "Один раз в год"}], "correct": "А"}, {"id": 19, "question": "После какого перерыва в работах повышенной опасности нужен внеплановый инструктаж?", "answers": [{"letter": "А", "text": "Более 3 дней"}, {"letter": "Б", "text": "Более 7 дней"}, {"letter": "В", "text": "Более 14 дней"}, {"letter": "Г", "text": "Более 30 календарных дней"}], "correct": "Г"}, {"id": 20, "question": "Какова минимальная численность экзаменационной комиссии?", "answers": [{"letter": "А", "text": "2 человека"}, {"letter": "Б", "text": "3 человека"}, {"letter": "В", "text": "5 человек"}, {"letter": "Г", "text": "7 человек"}], "correct": "Б"}, {"id": 21, "question": "Когда работников письменно предупреждают о предстоящей проверке знаний?", "answers": [{"letter": "А", "text": "В день проверки"}, {"letter": "Б", "text": "За 3 дня"}, {"letter": "В", "text": "Не позднее чем за 30 календарных дней"}, {"letter": "Г", "text": "Предупреждение не требуется"}], "correct": "В"}, {"id": 22, "question": "Где регистрируется целевой инструктаж при работах по наряду-допуску?", "answers": [{"letter": "А", "text": "В бланке наряда-допуска"}, {"letter": "Б", "text": "В журнале вводного инструктажа"}, {"letter": "В", "text": "В личной карточке работника"}, {"letter": "Г", "text": "Не регистрируется"}], "correct": "А"}, {"id": 23, "question": "Для какого инструктажа в журнале обязательно указывается причина?", "answers": [{"letter": "А", "text": "Первичного"}, {"letter": "Б", "text": "Повторного"}, {"letter": "В", "text": "Целевого"}, {"letter": "Г", "text": "Внепланового"}], "correct": "Г"}, {"id": 24, "question": "Работник получил неудовлетворительную оценку. Когда проводится повторная проверка?", "answers": [{"letter": "А", "text": "В тот же день"}, {"letter": "Б", "text": "Не позднее 1 месяца"}, {"letter": "В", "text": "Не ранее 3 месяцев"}, {"letter": "Г", "text": "Через год"}], "correct": "Б"}, {"id": 25, "question": "Ответственный работник не прошёл проверку знаний. Когда повторная проверка?", "answers": [{"letter": "А", "text": "На следующий день"}, {"letter": "Б", "text": "Не позднее 1 месяца"}, {"letter": "В", "text": "Не ранее 3 месяцев"}, {"letter": "Г", "text": "Через 1 год"}], "correct": "В"}, {"id": 26, "question": "Что следует, если ответственный работник повторно не прошёл проверку знаний?", "answers": [{"letter": "А", "text": "Расторжение трудового договора по инициативе работодателя"}, {"letter": "Б", "text": "Устное замечание"}, {"letter": "В", "text": "Перевод на нижестоящую должность"}, {"letter": "Г", "text": "Повторное обучение без последствий"}], "correct": "А"}, {"id": 27, "question": "Какова минимальная продолжительность обучения ответственных работников?", "answers": [{"letter": "А", "text": "10 академических часов"}, {"letter": "Б", "text": "16 академических часов"}, {"letter": "В", "text": "24 академических часа"}, {"letter": "Г", "text": "40 академических часов"}], "correct": "Г"}, {"id": 28, "question": "Сколько действует сертификат по специальным профессиональным компетенциям?", "answers": [{"letter": "А", "text": "Бессрочно"}, {"letter": "Б", "text": "1 год"}, {"letter": "В", "text": "3 года со дня сдачи теста"}, {"letter": "Г", "text": "5 лет"}], "correct": "В"}, {"id": 29, "question": "Как часто проверяются знания персонала с III группой по электробезопасности?", "answers": [{"letter": "А", "text": "Ежегодно"}, {"letter": "Б", "text": "Один раз в 3 года"}, {"letter": "В", "text": "Один раз в 5 лет"}, {"letter": "Г", "text": "Однократно"}], "correct": "А"}, {"id": 30, "question": "Как фиксируется тестирование ответственных работников?", "answers": [{"letter": "А", "text": "Аудиозаписью"}, {"letter": "Б", "text": "Видеозаписью"}, {"letter": "В", "text": "Фотографией экзаменуемого"}, {"letter"
